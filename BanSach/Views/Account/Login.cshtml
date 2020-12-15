@@ -1,0 +1,37 @@
+﻿@model BanSach.Models.LoginModel
+@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/Shared/_Layout_Account_Actions.cshtml";
+}
+<div class="main">
+    <h2>Login</h2>
+    <form action="/Account/Login" method="post">
+        @Html.AntiForgeryToken()
+        <label class="error">@Html.ValidationMessage("Invalid")</label>
+        <div class="input">
+            <label>Username or Email</label>
+            <input type="text" name="UsernameOrEmail" placeholder="Username Or Email" class="form-control" required oninvalid="this.setCustomValidity('Username or Email required')" oninput="setCustomValidity('')" />
+            <label>Password</label><label class="fgt-psw"><a href="/Account/ForgotPassword">Forgot password?</a></label>
+            <input type="password" name="Password" placeholder="Password" class="form-control" required oninvalid="this.setCustomValidity('Password required')" oninput="setCustomValidity('')" />
+            <input type="submit" value="Login" id="submit" class="btn btn-success form-control" />
+        </div>
+    </form>
+    <div class="register">
+        <label>Are you new? <a href="@Url.Action("Register", "Account")">Create here</a></label>
+    </div>
+</div>
+
+<style>
+    .register{
+        height:50px;
+        width:302px;
+        padding: inherit;
+        margin:0 auto;
+    }
+    #submit{
+        width:100%;
+    }
+    .fgt-psw{
+        float:right;
+    }
+</style>

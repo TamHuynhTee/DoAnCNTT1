@@ -1,0 +1,68 @@
+﻿@model IEnumerable<BanSach.Models.HoaDon>
+@{
+    ViewBag.Title = "PaymentHistory";
+    Layout = "~/Views/Shared/_Layout_Cart.cshtml";
+}
+
+<div class="main">
+    @if (Model.Count() == 0 || Model == null)
+    {
+        <label id="no-payment">Lịch sử trống</label>
+    }
+    else
+    {
+        <table>
+            <tr>
+                <th class="col-lg-1">Mã đơn</th>
+                <th class="col-lg-2">Tổng thanh toán</th>
+                <th class="col-lg-3">Địa chỉ nhận</th>
+                <th class="col-lg-2">Ngày in hóa đơn</th>
+                <th class="col-lg-2">Ngày giao dự kiến</th>
+                <th class="col-lg-2">Trạng thái</th>
+                <th class="col-lg-1">Options</th>
+            </tr>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.MaHD</td>
+                    <td>@item.TongThanhToan.Value.ToString("0#,0") &#8363;</td>
+                    <td>@item.DiaChiNhanHang</td>
+                    <td>@item.NgayLapHD.Value.ToString("dd-MM-yyyy HH:mm")</td>
+                    <td>@item.NgayNhanHang.Value.ToString("dd-MM-yyyy")</td>
+                    <td>@item.TrangThai</td>
+                    <td><a href="@Url.Action("Invoice", "HoaDon", new { id = item.MaHD })">Chi tiết</a></td>
+                </tr>
+            }
+        </table>
+    }
+</div>
+
+<style>
+    #no-payment {
+        display: flex;
+        justify-content: space-around;
+        align-content: center;
+        font-family: cursive;
+        color: #c7bebe;
+        font-size: -webkit-xxx-large;
+    }
+    .main{
+        width:80%;
+        height:500px;
+        margin:0 auto;
+        border:1px solid #808080;
+        background-color:beige;
+        overflow:auto;
+    }
+    table th {
+        text-align: center;
+        background-color:black;
+        color:white;
+    }
+    td {
+        text-align: center;
+        background-color:white;
+        border-bottom:2px solid black;
+        height:50px;
+    }
+</style>

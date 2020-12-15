@@ -1,0 +1,95 @@
+﻿
+@{
+    ViewBag.Title = "Phản hồi";
+    Layout = "~/Views/Shared/_Layout_Footer.cshtml";
+}
+<form action="#" method="post" class="feedback">
+    <div class="header">
+        <div class="brand">
+            <div class="brand-icon">
+                <img src="~/images/logo.png" height="100" width="100" />
+            </div>
+            <div class="brand-info">
+                <h1 style="color:red;font-weight:bold;font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif">NHÀ SÁCH TÂM ĐỨC</h1>
+                <hr />
+                <p style="text-align:right;">&copy; Copyright @DateTime.Now.Year. All rights reserved.</p>
+            </div>
+        </div>
+        <div class="form-feedback">
+            <h1 style="text-align:center; font-size:40px;font-weight:bold;font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;">FEEDBACK FORM</h1>
+        </div>
+    </div>
+    <div class="content">
+        <div class="opening" style="background-color:linen;padding: 10px 10px;">
+            <h2>Lời mở đầu</h2>
+            <p style="font-size:15px; text-align:justify;text-indent:20px;">
+                Chúng tôi luôn cố gắng đem tới cho khách hàng những sản phẩm tốt nhất, nhưng trong quá trình vận hành không thể tránh khỏi sai sót. Mọi góp ý của quý khách hàng luôn được chúng tôi đón nhận. Xin cảm ơn vì đã sử dụng nhà sách online Tâm Đức.
+            </p>
+        </div>
+        <div class="main">
+            <br />
+            <label>Tên</label>
+            <input class="form-control" name="name" type="text" placeholder="Example: Henry, Thomas, ..." />
+            <br />
+            <label>Email</label>
+            <input class="form-control" name="email" type="email" placeholder="example@gmail.com" />
+            <br />
+            <label>Loại phản hồi</label>
+            <select class="form-control" name="kind">
+                <option value="Complain">Phàn nàn về dịch vụ/website của chúng tôi</option>
+                <option value="Ideas">Đóng góp ý tưởng</option>
+                <option value="Other">Khác ...</option>
+            </select>
+            <br />
+            <label>Viết phản hồi của bạn ở đây</label>
+            <textarea class="form-control" name="feedback" cols="100" rows="8" type="text"></textarea>
+            <input type="submit" name="submit" class="btn btn-success" value="Submit" id="submit" height="100" width="100" style="font-size:15px;margin-top:10px;" />
+        </div>
+    </div>
+</form>
+
+<style>
+    textarea {
+        display: block;
+        min-width: 100%;
+    }
+
+    .main, .form-control {
+        font-size: 20px;
+    }
+
+    body {
+        background-image: url("/image/feedback.png");
+    }
+
+    .content {
+        padding: 25px 2em;
+    }
+
+    .brand {
+        display: flex;
+        justify-content: space-between;
+        padding: 25px 2em;
+    }
+
+    .header {
+        width: 100%;
+        height: 250px;
+        background-color: cornsilk;
+        border-bottom: 5px solid #e74424;
+    }
+
+    form.feedback {
+        box-shadow: none;
+        border: 0.1px solid grey;
+        border-bottom: 5px solid #e74424;
+        background-color: white;
+        margin: 50px auto;
+        width: 700px;
+        height: 1150px;
+    }
+
+    .feedback:hover {
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    }
+</style>

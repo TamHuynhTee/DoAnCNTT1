@@ -1,0 +1,100 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="~/favicon.ico" rel="icon" />
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <script type="text/javascript" src="~/Scripts/jquery-3.4.1.min.js"></script>
+    <style>
+        .main {
+            margin: 50px 0 20px 0;
+            font-size: 14px;
+            width: 100%;
+        }
+        form {
+            width: 302px;
+            padding: 10px 10px 20px;
+            background-color: #d3d3d34d;
+            border: 1px solid #ece7e7;
+            border-radius: 5px;
+            margin:0 auto;
+        }
+        .error {
+            color: red;
+            display: block;
+        }
+        #submit {
+            margin-top: 10px;
+        }
+        hr{
+            width:302px;
+        }
+        label {
+            margin-top: 5px;
+        }
+        h2,
+        .footer label{
+            text-align: center;
+        }
+        .input {
+            width: 282px;
+        }
+        .footer {
+            width: 302px;
+            margin:0 auto;
+        }
+         .footer-btn{
+             margin-top:10px;
+             display:flex;
+             justify-content: space-between;
+         }
+        .footer-brand {
+            display: flex;
+            justify-content: space-between;
+        }
+        .footer label{
+            font-weight:normal;
+        }
+        .form-btn {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        input[type="button"],
+        input[type="submit"] {
+            margin-top: 10px;
+            height: 34px;
+            width: 80px;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <a href="@Url.Action("Index","Home")" class="navbar-brand"> Trang chủ</a>
+        </div>
+    </div>
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+    </div>
+    <div class="footer">
+        <div class="footer-brand">
+            <label>&reg; Nhà sách Tâm Đức</label>
+            <label>&copy; Copyright - @DateTime.Now.Year</label>
+        </div>
+        <div class="footer-btn">
+            <a href="@Url.Action("Support","Home")">Support</a>
+            <a href="@Url.Action("Feedback","Home")">Feedback</a>
+            <a href="@Url.Action("About","Home")">About</a>
+            <a href="@Url.Action("Policy","Home")">Policy</a>
+        </div>
+    </div>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

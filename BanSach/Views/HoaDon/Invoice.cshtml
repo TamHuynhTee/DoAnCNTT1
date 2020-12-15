@@ -1,0 +1,189 @@
+﻿@model BanSach.Models.InvoiceDetail
+@using BanSach.Models 
+@{
+    ViewBag.Title = "Chi tiết đơn hàng";
+    Layout = "~/Views/Shared/_Layout_Cart.cshtml";
+    NhaSachEntities db = new NhaSachEntities();
+    string role = (from u in db.TaiKhoans
+                   where u.Username == User.Identity.Name
+                   select u.Role).FirstOrDefault();
+}
+
+<div class="bill">
+    <h2>HÓA ĐƠN</h2>
+    <div class="customer-info">
+        <div><img src="~/images/logo.png" height="50" width="50" /><h4 style="display:inline;font-weight:bold;">Nhà sách Tâm Đức</h4></div>
+        <div><label>Họ tên người nhận:</label><input class="form-control" value="@Model.Ho_TenKH" disabled/></div><!--!!-->
+        <div><label>Điện thoại:</label><input class="form-control" value="@Model.SDTDatHang" disabled/></div><!--!!-->
+        <div><label>Email:</label><input class="form-control" value="@Model.EmailXacNhan" disabled/></div><!--!!-->
+        <div>
+            <label style="float:right;">Thời gian đặt: <span>@Model.NgayLapHD.Value.ToString("dd-MM-yyyy HH:mm")</span></label>
+            <label style="float:right;">Thời gian nhận: <span>@Model.NgayNhan.Value.ToString("dd-MM-yyyy HH:mm")</span></label>
+        </div>
+        <div id="address"><label>Địa chỉ nhận hàng:</label><input class="form-control" value="@Model.DiaChiNhanHang" disabled/></div><!--!!-->
+        <div><label>Trạng thái:</label><input class="form-control" value="@Model.TrangThai" disabled/></div>
+        <div>
+            <form action="/HoaDon/Cancel" method="post" onsubmit="return confirm('Bạn chắc hủy đơn hàng chứ?');" id="btn">
+                <input name="idDon" value="@Model.MaDH" style="display:none;" />
+                <input name="idKhach" value="@Model.MaKH" style="display:none;" />
+                @if (Model.TrangThai != "Đã giao hàng")
+                {
+                    if (role == "user")
+                    {
+                        <button id="cancel" type="submit">Hủy đơn</button>
+                    }
+                }
+                else
+                {
+                    <h3 style="color:green;"><i class="glyphicon glyphicon-ok"></i>Giao thành công</h3>
+                }
+            </form>
+        </div>
+        <div style="font-size:12px;">
+            <p><span>Lưu ý:</span> Sau khi xác nhận đặt hàng, nếu hủy đơn hàng bất kể lý do trên 4 lần, hệ thống sẽ khóa tài khoản của bạn vô thời hạn.</p>
+        </div>
+    </div>
+    <div class="items">
+        <table>
+            <tr>
+                <th class="col-lg-1">STT</th>
+                <th class="col-lg-4">Tựa sách</th>
+                <th class="col-lg-2">Số lượng</th>
+                <th class="col-lg-2">Đơn giá</th>
+                <th class="col-lg-3">Thành tiền</th>
+            </tr>
+            @foreach(var item in Model.SachDaMua)
+            {
+                <tr>
+                    <td>@item.STT</td>
+                    <td>@item.TuaSach</td>
+                    <td>@item.SoLuong</td>
+                    <td>@item.DonGia.Value.ToString("0#,0")</td>
+                    <td>@item.ThanhTien.Value.ToString("0#,0")</td>
+                </tr>
+            }
+        </table>
+    </div>
+    <div class="in-money">
+        <div>
+            <label>Giảm giá:</label> @Model.GiamGia %
+        </div>
+        <div>
+            <label>Tạm tính:</label> @Model.TongTien.Value.ToString("0#,0") &#8363;
+        </div>
+        <div><label>Phí giao hàng:</label> 15,000&#8363;</div>
+        <h3><label>Tổng thanh toán:</label> @Model.TongThanhToan.Value.ToString("0#,0") đồng</h3>
+    </div>
+</div>
+
+<style>
+    table {
+        width: 100%;
+        border-spacing: 10px;
+        font-size: 16px;
+    }
+
+    table, th, td {
+        text-align: center;
+    }
+
+    th {
+        border-bottom: 1px solid gray;
+        color: red;
+    }
+
+    #cancel:hover,
+    #cancel:focus {
+        background-color: #f13e3e;
+    }
+
+    #btn {
+        width:100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+    }
+        #btn button {
+            width: 70%;
+            height: 50px;
+            color: white;
+            background-color:red;
+            border-radius: 0;
+            padding: 10px 5px;
+            border: 0;
+            outline: 0;
+        }
+
+    #address {
+        width: 40%;
+    }
+
+        #address input {
+            min-width: 100%;
+        }
+
+    .bill {
+        width: 100%;
+        height: 500px;
+        padding: 20px 30px;
+        padding-top: 0;
+    }
+
+        .bill h2 {
+            margin-top: 0;
+            text-align: center;
+            font-family: 'Times New Roman';
+        }
+
+    .customer-info {
+        width: 100%;
+        height: 35%;
+        border: 1px solid #ecdddd;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+        padding: 10px 10px;
+        background-color: beige;
+        font-family: 'Times New Roman';
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+        .customer-info div {
+            width: 20%;
+            height: 50%;
+            padding: 0 10px;
+        }
+        .customer-info input{
+            background-color:transparent;
+        }
+            .customer-info div span {
+                color: red;
+            }
+
+    .items {
+        width: 100%;
+        height: 55%;
+        border-right: 1px solid #ecdddd;
+        border-left: 1px solid #ecdddd;
+        background-color: aliceblue;
+        padding: 20px 30px;
+        overflow: auto;
+    }
+
+    .in-money {
+        width: 100%;
+        height: 10%;
+        border: 1px solid #ecdddd;
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+        background-color: beige;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 30px;
+    }
+
+        .in-money div {
+            font-size: 16px;
+        }
+</style>

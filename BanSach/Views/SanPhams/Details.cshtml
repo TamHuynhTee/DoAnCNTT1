@@ -1,0 +1,289 @@
+﻿@model BanSach.Models.SanPham
+@using BanSach.Models
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout_Home.cshtml";
+
+    string role = "";
+    int id = 0;
+    NhaSachEntities db = new NhaSachEntities();
+    List<DanhGiaSach> danhgia = new List<DanhGiaSach>();
+    if (User.Identity.IsAuthenticated)
+    {
+        role = (from u in db.TaiKhoans
+                where u.Username == User.Identity.Name.ToString()
+                select u.Role).FirstOrDefault();
+        id = (from u in db.KhachHangs
+              where u.UsernameKH == User.Identity.Name.ToString()
+              select u.MaKH).FirstOrDefault();
+    }
+    danhgia = (from u in db.DanhGiaSaches
+               where u.MaSach == Model.MaSach
+               select u).ToList();
+    bool check = db.DanhGiaSaches.Any(x => x.MaKH == id && x.MaSach == Model.MaSach);
+}
+
+<div class="main">
+    <div class="product-img">
+        <span><img src="@Model.AnhMinhHoa" /></span>
+    </div>
+    <div class="product-info">
+        <h3>@Model.TuaSach</h3>
+        <p><label>Tác giả:</label> @Model.TacGia1.TenTacGia</p>
+        <p><label>Thể loại:</label> @Model.LoaiSach.TenLoai</p>
+        <p><label>Nhà xuất bản:</label> @Model.NhaXuatBan1.TenNXB</p>
+        <p>
+            <label>Ngày xuất bản: </label>@if (@Model.NgayXuatBan == null)
+            {
+                <span>&lt;Chưa cập nhật&gt;</span>
+            }
+            else
+            {
+                @Model.NgayXuatBan.Value.ToString("dd/MM/yyyy")
+            }
+        </p>
+        @if (role == "admin")
+        {
+            <p><label>Trong kho:</label> <span style="color:blue;">@Model.SoLuong</span></p>
+            <button id="update" onclick="location.href = '@Url.Action("Edit", "SanPhams", new { id = Model.MaSach})'"><i class="glyphicon glyphicon-pencil"></i> Chỉnh sửa</button>
+        }
+        else
+        {
+            <p>
+                <label>Tình trạng:</label>
+                @if (Model.SoLuong.Value > 0)
+                {
+                    <span>Còn hàng</span>
+                }
+                else
+                {
+                    <span style="color:red;">Tạm thời hết hàng</span>
+                }
+            </p>
+            <h2 style="color:red;">@Model.DonGia.Value.ToString("0#,0") đồng</h2>
+            <form action="/GioHang/AddItem" method="post" id="add">
+                <input type="number" id="quantity" name="quantity" min="1" max="5" value="1" />
+                <input id="MaSach" name="MaSach" value="@Model.MaSach" style="display:none;" />
+                <input id="MaKH" name="MaKH" value="@id" style="display:none;" />
+                <input name="action" value="Details/@Model.MaSach" style="display:none;" />
+                <input name="controller" value="SanPhams" style="display:none;" />
+                <button type="submit" id="buy"><i class="glyphicon glyphicon-shopping-cart"></i></button>
+            </form>
+        }
+
+    </div>
+</div>
+
+<div class="product-review">
+    <div class="review-head">
+        <h3>Đánh giá về sách</h3>
+        <div style="display:flex;">
+            @if (role == "user")
+            {
+                if (!check)
+                {
+                    <form action="/DanhGia/Add" method="post" id="post-review">
+                        <input type="text" name="review" width="200" id="write" />
+                        <input name="id_khach" value="@id" style="display:none;" />
+                        <input name="id_sach" value="@Model.MaSach" style="display:none;" />
+                        <button id="add-review" type="submit">Thêm bình luận</button>
+                    </form>
+                }
+                else
+                {
+                    <p id="notify">*Lưu ý: mỗi khách hàng chỉ bình luận mỗi sản phẩm 1 lần</p>
+                    <form action="/DanhGia/Delete" method="post" onsubmit="return confirm('Bạn chắc muốn xóa bình luận chứ?');">
+                        <input name="id_khach" value="@id" style="display:none;" />
+                        <input name="id_sach" value="@Model.MaSach" style="display:none;" />
+                        <button id="del-review" type="submit">Xóa bình luận</button>
+                    </form>
+                }
+            }
+        </div>
+    </div>
+    <div class="review-items">
+        @if(danhgia == null || danhgia.Count == 0)
+        {
+            <label id="no-review">Chưa có đánh giá</label>
+        }
+        else
+        {
+            foreach(var item in danhgia)
+            {
+                <div class="review-item">
+                    <div id="review-account">
+                        <h4>@item.KhachHang.UsernameKH</h4><span>&ensp;@item.ThoiGianDang.Value.ToString("dd-MM-yyyy HH:mm")&ensp;</span>
+                        @if (role == "admin")
+                        {
+                            <form action="/DanhGia/Delete" method="post" onsubmit="return confirm('Xác nhận xóa?');">
+                                <input name="id_khach" value="@item.MaKH" style="display:none;" />
+                                <input name="id_sach" value="@Model.MaSach" style="display:none;" />
+                                <button id="admin-delete" type="submit">Xóa</button>
+                            </form>
+                        }
+                    </div>
+                    <p>@item.NoiDungDanhGia</p>
+                </div>
+            }
+        }
+    </div>
+</div>
+<style>
+    #post-review{
+        width:50%;
+        display:flex;
+        justify-content:space-between;
+    }
+    #write{
+        font-weight:normal;
+        min-width:300px;
+    }
+    footer{
+        display:none;
+    }
+    #review-account{
+        display:flex;
+    }
+    #admin-delete{
+        color:red;
+        display:inline;
+        background-color:transparent;
+        border:none;
+    }
+    .review-item{
+        margin-top: 5px;
+        width:100%;
+        height:70px;
+        padding:10px;
+        border:1px solid black;
+        border-radius:5px;
+    }
+    .review-item h4{
+        color:blue;
+        margin:0;
+    }
+    .review-item p{
+        background-color:antiquewhite;
+        padding-left:10px;
+    }
+    #no-review{
+        font-family:cursive;
+        color:gray;
+        padding:10px;
+        font-size:18px;
+    }
+    .body-container{
+        display:block;
+    }
+    .product-info{
+        width:60%;
+        padding: 20px 10px 20px 50px;
+        font-family:'Times New Roman';
+        font-size:16px;
+        color:black;
+    }
+    .product-img{
+        width:40%;
+    }
+    .product-info h3{
+        color:blue;
+    }
+    .product-info p label {
+        color: #868484;
+    }
+    .product-info form button,
+    #update{
+        border:0;
+        border-radius:0;
+        background-color:black;
+        color:white;
+        width:28px;
+        height:28px;
+        outline:0;
+    }
+    #update {
+        width: 100px;
+        height: 40px;
+    }
+        .product-info form button:hover,
+        .product-info form button:focus,
+        #update:hover,
+        #update:focus{
+            background-color: white;
+            color: black;
+        }
+        .product-img span {
+            margin: 0 auto;
+        }
+    .product-img img {
+        width: 100%;
+        height: 100%;
+        border: 1px solid #d5caca;
+        border-radius:5px;
+        padding:20px 20px;
+    }
+    .main {
+        width: 70%;
+        height: 400px;
+        margin: 20px auto;
+        border: 1px solid #f1f1f1;
+        display: flex;
+    }
+        .main:hover {
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        }
+    .product-review {
+        width: 70%;
+        height: 500px;
+        margin: 0 auto;
+    }
+        .main div {
+            height: 100%;
+        }
+    .body-container{
+        max-height:600px;
+    }
+    .review-head {
+        width: 100%;
+        height: 20%;
+        border: 1px solid #d5caca;
+        background-color: #ffdfb5;
+        font-weight: bold;
+        border-radius: 5px;
+        padding: 10px 10px;
+    }
+        .review-head button {
+            border: 0;
+            border-radius: 0;
+            outline: 0;
+            margin-left:20px;
+            height:26px;
+            color:white;
+        }
+    .review-items {
+        width: 100%;
+        max-height: 225px;
+        border: 1px solid #8383a7;
+        border-radius: 5px;
+        padding: 0 10px 0 10px;
+        overflow:auto;
+    }
+    #notify{
+        width:70%;
+        color:red;
+        margin:0 auto;
+    }
+
+    #add-review{
+        background-color:green;
+    }
+    #del-review{
+        background-color:red;
+    }
+    #add-review:hover,
+    #add-review:focus,
+    #del-review:hover,
+    #del-review:focus{
+        background-color:black;
+    }
+</style>

@@ -1,0 +1,45 @@
+﻿
+@{
+    ViewBag.Title = "Account update";
+    Layout = "~/Views/Shared/_Layout_Account_Actions.cshtml";
+}
+
+<div class="main">
+    <h2>Update your account</h2>
+    <form action="/KhachHang/InfoRegister" method="post">
+        @Html.AntiForgeryToken()
+        <input class="form-control text-box single-line" id="Username" value="@ViewBag.username" />
+        <label class="error">@Html.ValidationMessage("Invalid")</label>
+        <label>Họ & tên đệm</label>
+        <input type="text" name="Lastname" placeholder="Last name" class="form-control" value="" />
+        <label>Tên</label>
+        <input type="text" name="Firstname" placeholder="First name" class="form-control" value="" />
+        <label>Điện thoại</label>
+        <input type="tel" name="Phone" placeholder="Phone" class="form-control" pattern="[0][0-9]{9}" value="" />
+        <label>Giới tính</label>
+        <select name="Gender" id="Gender" class="form-control">
+            <option value="F">Female</option>
+            <option value="M">Male</option>
+            <option value="O">Other</option>
+        </select>
+        <label>Địa chỉ</label>
+        <input type="text" name="Address" placeholder="Address" class="form-control" value="" />
+        <label>Ngày sinh</label>
+        <input type="date" name="Birthday" placeholder="Birthday" class="form-control" value="" />
+        <div class="form-btn">
+            <input type="submit" class="btn btn-primary btn-inline" value="Later" id="submit" onclick="location.href = '/Home/Index'; this.form.action = '/KhachHang/InfoRegister';" />
+            <input type="submit" value="Update" id="submit" class="btn btn-success" />
+        </div>
+    </form>
+</div>
+
+<style>
+    #Username {
+        color: blue;
+        text-align: center;
+        font-weight: bold;
+        border: none;
+        background-color: transparent;
+        pointer-events: none;
+    }
+</style>

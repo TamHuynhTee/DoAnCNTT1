@@ -1,0 +1,272 @@
+﻿@model PagedList.IPagedList<BanSach.Models.SanPham>
+@using PagedList.Mvc
+@using BanSach.Models
+@{
+    ViewBag.Title = "Nhà sách Tâm Đức";
+    Layout = "/Views/Shared/_Layout_Home.cshtml";
+    int id = 0;
+    string role = "";
+    // Lấy id user
+    if (User.Identity.IsAuthenticated)
+    {
+        NhaSachEntities db = new NhaSachEntities();
+        id = (from u in db.KhachHangs
+              where u.UsernameKH == User.Identity.Name.ToString()
+              select u.MaKH).FirstOrDefault();
+        role = (from u in db.TaiKhoans
+                where u.Username == User.Identity.Name
+                select u.Role).FirstOrDefault();
+    }
+}
+<!-- Side bar -->
+<div class="sidebar">
+    <div class="sidebar-slide">
+        <form action="/Home/Index" method="post">
+            <input name="type" value="2" style="display:none;" />
+            <h3 style="text-align:center;font-weight:bold;">Filter</h3>
+            <input type="text" name="search_text" class="search" placeholder="Search here..." />
+            <button type="submit"><span class="glyphicon glyphicon-search"></span></button>
+            <label>Tìm theo: </label>
+            <select name="filter">
+                <option value="name">Tên sách</option>
+                <option value="category">Thể loại</option>
+                <option value="author"> Tên tác giả</option>
+                <option value="publisher">Tên nhà xuất bản</option>
+            </select>
+        </form>
+        <br />
+        <form action="/Home/Index" method="post">
+            <input name="type" value="3" style="display:none;" />
+            <label>Tìm theo giá: </label><br />
+            <input type="radio" name="price_range" value="<100" /><span> < 100.000 đồng</span><br />
+            <input type="radio" name="price_range" value="100-300" /><span> 100.000 - 300.000 đồng</span><br />
+            <input type="radio" name="price_range" value=">300" /><span> > 300.000 đồng</span><br />
+            <button type="submit">Tìm</button>
+        </form>
+    </div>
+    <div id="found"><h2>Hiện có: <span>@ViewBag.itemCount</span></h2></div>
+</div>
+<!-- main body -->
+<div class="main">
+    <div class="show-products">
+        @if (Model.Count == 0)
+        {
+            <label class="no-results">Không có sản phẩm</label>
+        }
+        @foreach (var item in Model)
+        {
+            <form action="/GioHang/AddItem" method="post" class="elements">
+                <div class="product-image">
+                    <img src="@item.AnhMinhHoa" height="251" />
+                </div>
+                <div class="product-info">
+                    <label class="kind">@item.LoaiSach.TenLoai</label>
+                    <label class="name">@item.TuaSach</label>
+                </div>
+                <div class="product-btn">
+                    <button type="button" id="info" onclick="location.href='@Url.Action("Details", "SanPhams",new { id = item.MaSach })'"><i class="glyphicon glyphicon-info-sign"></i></button>
+                    <button id="price">@item.DonGia.Value.ToString("0#,0")&#8363;</button>
+                    <!-- main parameters to action-->
+                    <input id="MaSach" name="MaSach" value="@item.MaSach" style="display:none;" />
+                    <input id="MaKH" name="MaKH" value="@id" style="display:none;" />
+                    <input name="action" value="Index" style="display:none;" />
+                    <input name="controller" value="Home" style="display:none;" />
+                    @if (role == "admin")
+                    {
+                        <input type="number" id="quantity" name="quantity" min="1" max="5" value="0" disabled />
+                        <button type="submit" id="buy" disabled><i class="glyphicon glyphicon-shopping-cart"></i></button>
+                    }
+                    else
+                    {
+                        <input type="number" id="quantity" name="quantity" min="1" max="5" value="0" />
+                        <button type="submit" id="buy"><i class="glyphicon glyphicon-shopping-cart"></i></button>
+                    }
+                </div>
+            </form>
+        }
+    </div>
+    <div class="page-number">
+        @Html.PagedListPager(Model, page => Url.Action("Index", new { page, type = ViewBag.type, kind = ViewBag.kind, search_text = ViewBag.search_text, filter = ViewBag.filter, price_range = ViewBag.price_range }))
+    </div>
+</div>
+
+
+<style>
+    .no-results {
+        width: 100%;
+        text-align: center;
+        color: #c7bebe;
+        font-size: -webkit-xxx-large;
+        font-family: cursive;
+    }
+
+    .show-products {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        min-height: 350px;
+    }
+
+    .elements {
+        width: 300px;
+        height: 360px;
+        margin-right: 29px;
+        margin-bottom: 10px;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+        border: 1px solid #f5ecec;
+        border-bottom: none;
+    }
+
+        .elements:hover {
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        }
+
+    .page-number {
+        width: 100%;
+        height: 74px;
+        margin-top: 25px;
+        background-color: #dadee2;
+        padding-left: 20px;
+    }
+
+    .product-image {
+        width: 100%;
+        height: 70%;
+        display: flex;
+        justify-content: space-around;
+    }
+
+    .product-info {
+        width: 100%;
+        height: 20%;
+        padding: 5px 5px;
+    }
+
+    .product-btn {
+        width: 100%;
+        height: 10%;
+        display: flex;
+    }
+
+        .product-btn button {
+            background-color: black;
+            color: white;
+            border-radius: 0;
+            border: none;
+            outline: 0;
+        }
+
+        .product-btn #info {
+            width: 15%;
+        }
+
+        .product-btn #price {
+            width: 55%;
+            margin: 0;
+            pointer-events: none;
+        }
+
+        .product-btn #quantity {
+            width: 15%;
+            height: 100%;
+            border-radius: 0;
+            border: 2px solid black;
+            outline: 0;
+        }
+
+        .product-btn #buy {
+            width: 15%;
+            height: 100%;
+        }
+
+        .product-btn button:hover,
+        .product-btn button:focus {
+            background-color: #ff3b00;
+        }
+
+        .product-btn #info:hover,
+        .product-btn #info:focus {
+            background-color: #65b7f6;
+        }
+
+    .kind, .name {
+        width: 100%;
+        text-align: center;
+        display: block;
+    }
+
+    .kind {
+        color: dimgrey;
+    }
+
+    .name {
+        font-size: 15px;
+        font-family: 'Times New Roman', Times, serif;
+    }
+    .main {
+        width: 75%;
+        float: right;
+        padding: 20px 10px;
+        overflow: auto;
+        color: black;
+    }
+
+    .sidebar {
+        width: 25%;
+        height: 100%;
+        float: left;
+        padding: 20px 20px;
+    }
+
+    .sidebar-slide {
+        width: 100%;
+        height: 300px;
+        background-color: beige;
+        border-radius: 5px;
+        border: 3px solid black;
+        padding: 10px 10px;
+    }
+
+        .sidebar-slide:hover {
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        }
+
+        .sidebar-slide input[type = "text"] {
+            width: 85%;
+            border: 1px solid black;
+            margin-bottom: 5px;
+        }
+
+            .sidebar-slide input[type = "text"]:focus {
+                border: none;
+                outline: 1px solid red;
+            }
+
+        .sidebar-slide button {
+            background-color: black;
+            color: white;
+            border: none;
+        }
+    #found {
+        width: 100%;
+        height: 100px;
+        margin-top: 25px;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        font-family: 'Times New Roman', Times, serif;
+        border-radius: 5px;
+        background-color: antiquewhite;
+        border: 3px solid black;
+        color: #0015a9;
+    }
+
+        #found h2 {
+            font-weight: 700;
+        }
+
+        #found span {
+            color: red;
+        }
+</style>

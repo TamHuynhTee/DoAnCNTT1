@@ -1,0 +1,163 @@
+﻿@model BanSach.Models.ProceedPaymentModel
+@{
+    ViewBag.Title = "Thanh toán";
+    Layout = "~/Views/Shared/_Layout_Cart.cshtml";
+}
+
+<form action="/HoaDon/Create" method="post" class="bill" onsubmit="return confirm('Xác nhận đặt hàng?');">
+        <h2>HÓA ĐƠN ĐẶT HÀNG</h2>
+        <div class="customer-info">
+            <div><img src="~/images/logo.png" height="50" width="50" /><h4 style="display:inline;font-weight:bold;">Nhà sách Tâm Đức</h4></div>
+            <div><label>Họ tên người nhận:(<span>*</span>)</label><input type="text" class="form-control" name="Ho_TenKH" value="@Model.Ho_TenKH" required/></div><!--!!-->
+            <div><label>Điện thoại:(<span>*</span>)</label><input type="text" class="form-control" name="SDTDatHang" value="@Model.SDTDatHang" required/></div><!--!!-->
+            <div><label>Email:(<span>*</span>)</label><input type="text" class="form-control" name="EmailXacNhan" value="@Model.EmailXacNhan" required/></div><!--!!-->
+            <div><label style="float:right;">Thời gian đặt: <span>@DateTime.Now.ToString("dd-MM-yyyy HH:mm")</span></label></div>
+            <div id="address"><label>Địa chỉ nhận hàng:(<span>*</span>)</label><input type="text" class="form-control" name="DiaChiNhanHang" value="@Model.DiaChiNhanHang" required/></div><!--!!-->
+            <div id="btn"><button id="back-to-cart" type="button" onclick="location.href = '@Url.Action("Index", "GioHang", new { id = Model.MaKH })'"><i class="glyphicon glyphicon-shopping-cart"></i> Quay lại giỏ hàng</button></div>
+            <input name="MaKH" value="@Model.MaKH" style="display:none;" />
+            <div id="btn"><button id="confirm-payment" type="submit"><i class="glyphicon glyphicon-lock"></i> Xác nhận đặt hàng</button></div>
+            <div style="font-size:12px;">
+                <p>(<span>*</span>) Phải điền vào các trường này</p>
+            </div>
+        </div>
+    <div class="items">
+        <table>
+            <tr>
+                <th class="col-lg-1">STT</th>
+                <th class="col-lg-4">Tựa sách</th>
+                <th class="col-lg-2">Số lượng</th>
+                <th class="col-lg-2">Đơn giá</th>
+                <th class="col-lg-3">Thành tiền</th>
+            </tr>
+            @foreach (var item in Model.SachDaMua)
+            {
+                <tr>
+                    <td>@item.STT</td>
+                    <td>@item.TuaSach</td>
+                    <td>@item.SoLuong</td>
+                    <td>@item.DonGia.Value.ToString("0#,0")</td>
+                    <td>@item.ThanhTien.Value.ToString("0#,0")</td>
+                </tr>
+            }
+        </table>
+    </div>
+    <div class="in-money">
+        <div>
+            <label>Giảm giá:</label> <input name="GiamGia" value="@Model.GiamGia.Value" style="display:none;" /> @Model.GiamGia%
+        </div>
+        <div>
+            <label>Tạm tính:</label> <input name="TongTien" value="@Model.TongTien.Value" style="display:none;" /> @Model.TongTien.Value.ToString("0#,0")&#8363;
+        </div>
+        <div><label>Phí giao hàng:</label> 15,000&#8363;</div>
+        <h3><label>Tổng thanh toán:</label> <input name="TongThanhToan" value="@Model.TongThanhToan.Value" style="display:none;" />@Model.TongThanhToan.Value.ToString("0#,0") đồng</h3>
+    </div>
+</form>
+
+<style>
+    table {
+        width: 100%;
+        border-spacing: 10px;
+        font-size:16px;
+    }
+        table, th, td {
+            text-align: center;
+        }
+        th{
+            border-bottom:1px solid gray;
+            color:red;
+        }
+    #back-to-cart:hover,
+    #back-to-cart:focus {
+        background-color: #91ddfb;
+    }
+    #confirm-payment:hover,
+    #confirm-payment:focus {
+        background-color: lightgreen;
+    }
+    #back-to-cart {
+        background-color: #00b8ff;
+    }
+    #confirm-payment{
+        background-color:darkgreen;
+    }
+    #btn{
+        display:flex;
+        align-items:center;
+        justify-content:space-around;
+    }
+    #btn button{
+        width:70%;
+        height:50px;
+        color:white;
+        border-radius:0;
+        padding:10px 5px;
+        border:0;
+        outline:0;
+    }
+    #address{
+        width:40%;
+    }
+    #address input[type="text"]{
+        max-width:100%;
+    }
+    .bill {
+        width: 100%;
+        height: 500px;
+        padding: 20px 30px;
+        padding-top: 0;
+    }
+    .bill h2{
+        margin-top:0;
+        text-align:center;
+        font-family:'Times New Roman';
+    }
+    .customer-info {
+        width: 100%;
+        height: 35%;
+        border: 1px solid #ecdddd;
+        border-bottom: none;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+        padding: 10px 10px;
+        background-color: beige;
+        font-family:'Times New Roman';
+        display:flex;
+        flex-wrap:wrap;
+    }
+        .customer-info div {
+            width: 20%;
+            height: 50%;
+            padding:0 10px;
+        }
+        .customer-info div span{
+            color:red;
+        }
+    .items {
+        width: 100%;
+        height: 55%;
+        border-right: 1px solid #ecdddd;
+        border-left: 1px solid #ecdddd;
+        background-color: aliceblue;
+        padding: 20px 30px;
+        overflow:auto;
+    }
+    .in-money {
+        width: 100%;
+        height: 10%;
+        border: 1px solid #ecdddd;
+        border-top: none;
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+        background-color: beige;
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        padding:0 30px;
+    }
+        .in-money div {
+            font-size: 16px;
+        }
+        .items:hover {
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        }
+</style>

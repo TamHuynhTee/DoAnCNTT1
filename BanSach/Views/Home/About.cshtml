@@ -1,0 +1,77 @@
+﻿@{
+    ViewBag.Title = "Contact";
+    Layout = "~/Views/Shared/_Layout_Footer.cshtml";
+}
+<div class="admins">
+    <!-- Tam Huynh-->
+    <div class="admin" id="tamhuynh">
+        <div class="avatar" style="background-color:blanchedalmond;">
+            <img src="~/images/tamhuynh.png" height="100" width="100" class="img-circle" />
+        </div>
+        <hr />
+        <div class="contact-info">
+            <p><label>Name :</label> Huỳnh Thanh Tâm</p>
+            <p><label>Birthday :</label> 26/05/2000</p>
+            <p><label>Current Role :</label> CEO</p>
+            <p><label>Contact Phone :</label> 0347933844</p>
+            <p><label>Contact Email :</label> huynhthanhtam@gmail.com</p>
+        </div>
+    </div>
+    <!-- Tan Ho-->
+    <div class="admin" id="ducphung">
+        <div class="avatar" style="background-color:gainsboro;">
+            <img src="~/images/ducphung.png" height="100" width="100" class="img-circle" />
+        </div>
+        <hr />
+        <div class="contact-info">
+            <p><label>Name :</label> Phùng Vĩnh Đức</p>
+            <p><label>Birthday :</label> 31/01/2000</p>
+            <p><label>Current Role :</label> DEV</p>
+            <p><label>Contact Phone :</label> 0888672262</p>
+            <p><label>Contact Email :</label> ducphung@gmail.com</p>
+        </div>
+    </div>
+</div>
+<style>
+    .contact-info {
+        padding: 10px 20px;
+        font-family: Bahnschrift;
+    }
+
+    .avatar {
+        display: flex;
+        justify-content: center;
+    }
+
+    .admin {
+        box-shadow: none;
+        border: 0.1px solid grey;
+        background-color: white;
+        margin: 25px 100px;
+        padding: 15px 15px;
+        width: 350px;
+        height: 400px;
+    }
+
+    .admins {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    body {
+        background-color:beige;
+    }
+
+    .admin:hover {
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    }
+
+    #tamhuynh {
+        border-bottom: 5px solid red;
+    }
+
+    #ducphung {
+        border-bottom: 5px solid blue;
+    }
+</style>

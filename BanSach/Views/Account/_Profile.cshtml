@@ -1,0 +1,61 @@
+﻿@model BanSach.Models.ProfileModel
+@{
+    ViewBag.Title = "_Profile";
+    Layout = "~/Views/Shared/_Layout_Home.cshtml";
+}
+
+<div class="main">
+    <div class="avatar">
+        <img src="@Model.avatar" height="241" width="241"/>
+        <label style="text-align:center;width:100%;margin-top:30px;color:blue;">@Model.username</label>
+    </div>
+    <div class="account-info">
+        <p><label>Họ tên:</label> @Model.HoTen</p>
+        <p><label>Email:</label> @Model.Email</p>
+        <p><label>Số điện thoại:</label> @Model.SDT</p>
+        <p><label>Địa chỉ:</label> @Model.DiaChi</p>
+        <p><label>Giới tính:</label> @if (Model.GioiTinh == "M")
+        {<span>Nam</span>}
+        else if (Model.GioiTinh == "F")
+        { <span>Nữ</span>}
+        else { <span>Khác</span>}
+        </p>
+        <p><label>Sinh nhật:</label> @Model.SinhNhat.Value.ToString("dd-MM-yyyy")</p>
+        <button onclick="location.href='@Url.Action("ChangePassword", "Account", new { username = Model.username })'"><i class="glyphicon glyphicon-cog"></i> Đổi mật khẩu</button>
+        <button onclick="location.href='@Url.Action("Edit", "Account", new { username = Model.username })'"><i class="glyphicon glyphicon-edit"></i> Sửa thông tin</button>
+    </div>
+</div>
+
+<style>
+    .avatar {
+        width: 30%;
+        padding: 40px;
+    }
+    .account-info {
+        width: 70%;
+        padding: 40px 30px;
+    }
+    .account-info label{
+        margin-bottom:20px;
+    }
+    .account-info button{
+        background-color:white;
+        color:black;
+        border: 2px solid black;
+    }
+        .account-info button:hover,
+        .account-info button:focus {
+            background-color: black;
+            color: white;
+        }
+    .main{
+        margin: 0 auto;
+        width: 80%;
+        height: 380px;
+        border: 1px solid #f3c6c6;
+        display:flex;
+    }
+    .main div{
+        height:100%;
+    }
+</style>
