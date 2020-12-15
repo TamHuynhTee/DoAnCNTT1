@@ -17,6 +17,7 @@ namespace BanSach.Controllers
             dg.MaKH = id_khach;
             dg.MaSach = id_sach;
             dg.NoiDungDanhGia = review;
+            dg.ThoiGianDang = DateTime.Now;
             db.DanhGiaSaches.Add(dg);
             db.SaveChanges();
             return RedirectToAction("Details", "SanPhams", new { id = id_sach });

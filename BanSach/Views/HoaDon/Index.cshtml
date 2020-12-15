@@ -86,9 +86,10 @@
                     @Html.ActionLink("Chi tiết", "Invoice", new { id = item.MaHD })
                     @if (item.TrangThai != "Đã giao hàng")
                     {
-                    <form action="/HoaDon/AdminDelete" method="post" onsubmit="return confirm('Bạn chắc muốn xóa đơn này?');">
-                        <button type="submit" style="color:white;background-color:red;">Xóa</button>
-                    </form>
+                        <form action="/HoaDon/AdminDelete" method="post" onsubmit="return confirm('Bạn chắc muốn xóa đơn này?');">
+                            <input name="id" value="@item.MaHD" style="display:none;"/>
+                            <button type="submit" style="color:white;background-color:red;">Xóa</button>
+                        </form>
                     }
                 </td>
             </tr>
