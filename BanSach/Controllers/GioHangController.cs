@@ -70,6 +70,16 @@ namespace BanSach.Controllers
         public ActionResult RenderInvoice(List<GioHang> model, int id)
         {
             PreReceipt pre = new PreReceipt();
+            if (model.Count == 0)
+            {
+                pre.Total_Item = 0;
+                pre.Discount = getDiscount(id);
+                pre.Total_Quantity = 0;
+                pre.Provisional = 0;
+                pre.Total_Money = 0;
+                goto Success;
+            }
+            
             pre.Total_Item = model.Count(x => x.MaKH == id);
             pre.Discount = getDiscount(id);
             pre.Total_Quantity = 0;
@@ -80,6 +90,7 @@ namespace BanSach.Controllers
                 pre.Provisional += model[i].ThanhTien;
             }
             pre.Total_Money = pre.Provisional - pre.Provisional * ((double)pre.Discount / 100);
+            Success:
             ViewBag.khachhang_thanhtoan_id = id;
             return PartialView("~/Views/Shared/_InvoicePreview.cshtml", pre);
         }

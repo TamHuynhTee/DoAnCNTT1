@@ -174,8 +174,7 @@ namespace BanSach.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult ResetPassword(string Username, string Password, string ConfirmPassword)
         {
-            TaiKhoan taiKhoan = new TaiKhoan();
-            taiKhoan.Username = Username;
+            var taiKhoan = db.TaiKhoans.Find(Username);
             if (!(Password.Equals(ConfirmPassword)))
             {
                 ModelState.AddModelError("Invalid", "Password not match");
@@ -184,7 +183,7 @@ namespace BanSach.Controllers
             taiKhoan.Password = Password;
             db.Entry(taiKhoan).State = System.Data.Entity.EntityState.Modified;
             db.SaveChanges();
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Login", "Account");
         }
 
         [HttpGet]

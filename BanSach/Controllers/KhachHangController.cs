@@ -36,6 +36,7 @@ namespace BanSach.Controllers
             khachHang.NgaySinh = customer.Birthday;
             khachHang.AnhDaiDien = "/images/avatar_icon.png";
             khachHang.SoLanHuyDon = 0;
+            khachHang.GiamGia = 5;
             khachHang.UsernameKH = Session["username"].ToString();
             db.KhachHangs.Add(khachHang);
             db.SaveChanges();
